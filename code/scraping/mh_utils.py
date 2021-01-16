@@ -150,7 +150,7 @@ def generate_raw_mortality_per_person(original_file: str) -> pd.DataFrame:
     return raw_per_person_df
 
 
-def generate_person_attributes(df: pd.DataFrame):
+def generate_person_attributes(df: pd.DataFrame) -> str:
     '''
     Function receives a data frame object with raw person data and parses it for comorbities, age and sex of the person.
     The function saves a csv file of the generated dataframe and returns the file path to the file.

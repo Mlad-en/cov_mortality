@@ -8,6 +8,7 @@ BG_MH_URL = {
         },
     }
 }
+URl_MAIN = 'https://www.nsi.bg'
 
 # Bulgarian National Statistics Institute
 BG_NSI_URL = {
@@ -15,6 +16,7 @@ BG_NSI_URL = {
     'pages': {
         'life_expectancy':
             '/bg/content/3018/смъртност-и-средна-продължителност-на-предстоящия-живот-на-населението-по-местоживеене',
+            'mortality_per_week': '/bg/node/18121/',
     },
     'files': {
         'mortality_per_week': '/bg/node/18121/',

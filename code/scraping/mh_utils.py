@@ -118,6 +118,7 @@ def generate_raw_mortality_per_person(original_file: str) -> pd.DataFrame:
 
     raw_per_person_df = pd.DataFrame(columns=PER_PERSON_COLUMNS)
     raw_article_text_df = pd.read_csv(original_file)
+    raw_article_text_df.dropna(axis=0, how='any', inplace=True)
 
     for index in raw_article_text_df.index:
         article_text = raw_article_text_df.at[index, 'article_text']
@@ -173,11 +174,12 @@ def generate_person_attributes(df: pd.DataFrame) -> str:
                 df.at[index, attr_name] = 'N'
 
         no_comorbidity = 'Y' if 'придружаващи заболявания' in person_data \
-                                and ('без' in person_data or 'няма' in person_data) \
+                                and ('без' in person_data or 'няма' in person_data
+                                     or ' не са въведени' in person_data) \
             else ''
         df.at[index, 'no_comorbidity'] = no_comorbidity
 
-        gender = 'мъж' if 'мъж' in person_data else 'жена' if 'жена' in person_data else unknown
+        gender = 'male' if 'мъж' in person_data else 'female' if 'жена' in person_data else unknown
         df.at[index, 'gender'] = gender
 
         try:

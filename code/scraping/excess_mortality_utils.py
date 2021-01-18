@@ -10,7 +10,7 @@ from code.url_constants import BG_NSI_URL
 from code.folder_constants import source_data
 
 
-def get_mortality_in_bulgaria():
+def get_mortality_in_bulgaria() -> str:
     '''
     Function scrapes the Bulgarian National Statistics Institute for Excess Death.
 
@@ -49,6 +49,7 @@ def get_mortality_in_bulgaria():
     excess_death.reset_index(inplace=True)
     excess_death.rename(columns={excess_death.columns[0]: "Week"}, inplace=True)
     excess_death['Week'] = excess_death['Week'].str.replace('W', '')
+    excess_death['Week'] = pd.to_numeric(excess_death['Week'])
 
     scrape_date = datetime.date.today()
     file_name = f'BG_excess_mortality_scrdt({scrape_date}).csv'
@@ -57,5 +58,3 @@ def get_mortality_in_bulgaria():
     excess_death.to_csv(file_location, encoding='utf-8-sig', index=False)
 
     return file_location
-
-

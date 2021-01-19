@@ -9,7 +9,7 @@ import requests
 import pandas as pd
 
 from code.folder_constants import source_data
-from code.mh_scraping_constants import *
+from code.scraping_constants import *
 from code.url_constants import BG_MH_URL
 
 

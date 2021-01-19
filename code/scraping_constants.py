@@ -24,3 +24,11 @@ PER_PERSON_COMORBIDITY = {
 }
 
 PER_PERSON_AGE_PATTERN = r'[\d]+'
+
+EUROSTAT_AGES = ['ck_Y_LT5', 'ck_Y5-9', 'ck_Y10-14', 'ck_Y15-19', 'ck_Y20-24', 'ck_Y25-29', 'ck_Y30-34',
+                 'ck_Y35-39', 'ck_Y40-44', 'ck_Y45-49', 'ck_Y50-54', 'ck_Y55-59', 'ck_Y60-64', 'ck_Y65-69',
+                 'ck_Y70-74', 'ck_Y75-79', 'ck_Y80-84', 'ck_Y85-89', 'ck_Y_GE90', ]
+
+EUROSTAT_COUNTRIES = ['ck_BE', 'ck_BG', 'ck_PL', 'ck_ES', 'ck_FR', 'ck_RO', ]
+
+EUROSTAT_SEXES = ['ck_F', 'ck_M']

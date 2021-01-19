@@ -53,10 +53,10 @@ def get_life_expectancy_cl(filename: str, url_dict: Dict, page_file: str, pf_nam
 
 def merge_cz_files(file_men: str, file_women: str) -> str:
     '''
-
-    :param file_men:
-    :param file_women:
-    :return:
+    Function merges the life expectancy files for men and women in Czechia
+    :param file_men: source file for life expectancy for men
+    :param file_women: source file for life expectancy for men
+    :return: Returns the file path of the generated file
     '''
 
     file_men = path.join(source_data, file_men)
@@ -82,7 +82,7 @@ def merge_cz_files(file_men: str, file_women: str) -> str:
 
 
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
     # merge_cz_files('cz_life_expectancy_men.csv','cz_life_expectancy_women.csv')
 
 #     from code.url_constants import LIFE_EXPECTANCY_DATA

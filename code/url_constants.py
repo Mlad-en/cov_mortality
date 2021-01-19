@@ -136,3 +136,11 @@ LIFE_EXPECTANCY_DATA = {
         'start_index': ['2019', 'věk (x) age'],
     }
 }
+
+# Eurostat website providing mortality data per country, week, gender and age group
+EUROSTAT_MORTALITY = {
+    'main': 'https://appsso.eurostat.ec.europa.eu',
+    'pages': {
+        'mortality_per_week' : '/nui/show.do?dataset=demo_r_mweek3&lang=en'
+    }
+}

@@ -67,7 +67,7 @@ ES_INE_URL = {
     'files': {
         'life_expectancy':
             '/ss/Satellite?blobcol=urldata&blobheader=Unknown+format&blobheadername1=Content-Disposition'
-            '&blobheadervalue1=attachment%3B+filename%3DD1T5.xlsx&blobkey=urldata&blobtable'
+            '&blobheadervalue1=attachment%3B+init_file%3DD1T5.xlsx&blobkey=urldata&blobtable'
             '=MungoBlobs&blobwhere=697%2F241%2FD1T5.xlsx&ssbinary=true'
     }
 }
@@ -84,9 +84,20 @@ CZ_CZSO_URL = {
     }
 }
 
+#Czechia Covid-19 stats website
+CZ_COV_URL = {
+    'main': 'https://onemocneni-aktualne.mzcr.cz',
+    'pages': {
+        'api_list': '/api/v2/covid-19'
+    },
+    'files': {
+        'mortality_by_age_gender': '/api/v2/covid-19/umrti.csv'
+    }
+}
+
 LIFE_EXPECTANCY_DATA = {
     'Bulgaria': {
-        'filename': 'bg_life_expectancy.csv',
+        'init_file': 'bg_life_expectancy.csv',
         'sheet_name': '2017-2019',
         'url_dict': BG_NSI_URL,
         'page_file': 'files',
@@ -97,7 +108,7 @@ LIFE_EXPECTANCY_DATA = {
         'end_index': ['Unnamed: 0', 'В градовете']
     },
     'United Kingdom':{
-        'filename': 'uk_life_expectancy.csv',
+        'init_file': 'uk_life_expectancy.csv',
         'sheet_name': '2017-2019',
         'url_dict': UK_ONS_URL,
         'page_file': 'files',
@@ -107,7 +118,7 @@ LIFE_EXPECTANCY_DATA = {
         'start_index': ['National Life Tables, Great Britain', 'x'],
     },
     'Czech Republic-MEN': {
-        'filename': 'cz_life_expectancy_men.csv',
+        'init_file': 'cz_life_expectancy_men.csv',
         'url_dict': CZ_CZSO_URL,
         'page_file': 'files',
         'pf_name': 'life_expectancy_men',
@@ -116,7 +127,7 @@ LIFE_EXPECTANCY_DATA = {
         'start_index': ['2019', 'věk (x) age'],
     },
     'Czech Republic-WOMEN': {
-        'filename': 'cz_life_expectancy_women.csv',
+        'init_file': 'cz_life_expectancy_women.csv',
         'url_dict': CZ_CZSO_URL,
         'page_file': 'files',
         'pf_name': 'life_expectancy_women',

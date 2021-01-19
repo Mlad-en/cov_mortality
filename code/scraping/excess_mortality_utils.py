@@ -6,7 +6,7 @@ import numpy as np
 from requests import get
 from bs4 import BeautifulSoup
 
-from code.url_constants import BG_NSI_URL
+from code.url_constants import BG_NSI_URL, CZ_COV_URL
 from code.folder_constants import source_data
 
 
@@ -52,9 +52,33 @@ def get_mortality_in_bulgaria() -> str:
     excess_death['Week'] = pd.to_numeric(excess_death['Week'])
 
     scrape_date = datetime.date.today()
-    file_name = f'BG_excess_mortality_scrdt({scrape_date}).csv'
+    file_name = f'bg_excess_mortality_scrdt({scrape_date}).csv'
     location = source_data
     file_location = path.join(location, file_name)
     excess_death.to_csv(file_location, encoding='utf-8-sig', index=False)
+
+    return file_location
+
+
+def get_mortality_by_gender_age_cz()->str:
+    '''
+    Function scrapes the Czech Official Covid-19 website for mortality and saves a file of the result
+    :return: Returns the file path of the generated file
+    '''
+
+    file = CZ_COV_URL['main'] + CZ_COV_URL['files']['mortality_by_age_gender']
+    df = pd.read_csv(file)
+
+    rename_columns = ['date', 'age', 'gender']
+    df = df[['datum', 'vek', 'pohlavi']]
+    df.columns = rename_columns
+
+    df['gender'] = df['gender'].str.replace('M', 'male')
+    df['gender'] = df['gender'].str.replace('Z', 'female')
+
+    file_name = f'cz_mortality_by_gender_age.csv'
+    location = source_data
+    file_location = path.join(location, file_name)
+    df.to_csv(file_location, index=False)
 
     return file_location

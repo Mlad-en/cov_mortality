@@ -100,7 +100,7 @@ def save_raw_mh_articles(period_dict: Dict[str, Tuple[int, int, int]]) -> str:
         }
         df = df.append(data, ignore_index=True)
 
-    file_name = f'MH_raw_article_text_from_{period_dict["start_date"]}_to_{period_dict["end_date"]}.csv'
+    file_name = f'bg_mh_raw_article_text_from_{period_dict["start_date"]}_to_{period_dict["end_date"]}.csv'
     location = source_data
     file_location = path.join(location, file_name)
     df.to_csv(file_location, encoding='utf-8-sig', index=False)
@@ -144,7 +144,7 @@ def generate_raw_mortality_per_person(original_file: str) -> pd.DataFrame:
             for person_mortality in mortality_snippet:
                 data = {
                     'date': date,
-                    'person_data_raw': person_mortality.strip('\n')
+                    'person_data_raw': person_mortality.strip()
                 }
                 raw_per_person_df = raw_per_person_df.append(data, ignore_index=True)
 
@@ -163,7 +163,7 @@ def generate_person_attributes(df: pd.DataFrame) -> str:
     df = df
 
     for index in df.index:
-        person_data = df.at[index, 'person_data_raw']
+        person_data = df.at[index, 'person_data_raw'].lower()
 
         for attr_name, attr_values in PER_PERSON_COMORBIDITY.items():
             for attr in attr_values:
@@ -173,9 +173,10 @@ def generate_person_attributes(df: pd.DataFrame) -> str:
             else:
                 df.at[index, attr_name] = 'N'
 
-        no_comorbidity = 'Y' if 'придружаващи заболявания' in person_data \
+        no_comorbidity = 'Y' if 'придружаващи' in person_data \
                                 and ('без' in person_data or 'няма' in person_data
-                                     or ' не са въведени' in person_data) \
+                                     or 'не са въведени' in person_data
+                                     or 'липсва информация' in person_data) \
             else ''
         df.at[index, 'no_comorbidity'] = no_comorbidity
 
@@ -188,7 +189,7 @@ def generate_person_attributes(df: pd.DataFrame) -> str:
         except (TypeError, IndexError):
             continue
 
-    file_name = f'PER_PERSON_DATA.csv'
+    file_name = f'bg_mh_per_person_mortality.csv'
     location = source_data
     file_location = path.join(location, file_name)
     df.to_csv(file_location, encoding='utf-8-sig', index=False)

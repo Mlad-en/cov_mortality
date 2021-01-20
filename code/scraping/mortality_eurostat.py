@@ -1,5 +1,6 @@
 from time import sleep
-from os import path
+from os import path, listdir, rename
+from zipfile import ZipFile
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -22,10 +23,16 @@ class WebDriver:
         self.driver.quit()
 
 
-def uncheck_default_selection(browser):
-    select_all = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.ID, 'checkUncheckAllCheckboxTable')))
-    select_all.click()
-    select_all.click()
+def locate_and_click_element(browser, select_type: str, element_str: str, clicks: int = 1):
+    sel_type = {
+        'id': By.ID,
+        'xpath': By.XPATH,
+        'css': By.CSS_SELECTOR,
+        'class': By.CLASS_NAME
+    }
+    item = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((sel_type[select_type], element_str)))
+    for click in range(clicks):
+        item.click()
 
 
 def get_eurostat_mortality_by_5y_intervals(year, week_start, week_end):
@@ -52,8 +59,8 @@ def get_eurostat_mortality_by_5y_intervals(year, week_start, week_end):
         url = EUROSTAT_MORTALITY['main'] + EUROSTAT_MORTALITY['pages']['mortality_per_week']
         browser.get(url)
         browser.maximize_window()
-        buttons = browser.find_elements_by_class_name('selectDataButton')
-        buttons[0].click()
+
+        locate_and_click_element(browser, select_type='class', element_str='selectDataButton')
 
         # Switch to pop-up window
         windows = browser.window_handles
@@ -61,24 +68,48 @@ def get_eurostat_mortality_by_5y_intervals(year, week_start, week_end):
         browser.maximize_window()
 
         for param_name, param_values in search_params.items():
-            title = browser.find_element_by_xpath(f'//span[contains(text(), "{param_name}")]')
-            title.click()
-            uncheck_default_selection(browser)
-
+            # Select search param (age, sex, time, country)
+            locate_and_click_element(browser, select_type='xpath', element_str=f'//span[contains(text(), "{param_name}")]')
+            # Uncheck selection for all search parameters
+            locate_and_click_element(browser, select_type='id', element_str='checkUncheckAllCheckboxTable', clicks=2)
+            # Set search parameters
             for item in param_values:
-                checkbox = browser.find_element_by_id(item)
-                checkbox.click()
+                locate_and_click_element(browser, select_type='id', element_str=item)
 
-        update_button = browser.find_element_by_id('updateExtractionButton')
-        update_button.click()
+        locate_and_click_element(browser, select_type='id', element_str='updateExtractionButton')
 
         #  Switch to main window
         windows = browser.window_handles
         browser.switch_to.window(windows[0])
 
-        download_button = browser.find_element_by_css_selector('li[class="download"]')
-        download_button.click()
+        locate_and_click_element(browser, select_type='css', element_str='li[class="download"]')
+        locate_and_click_element(browser, select_type='css', element_str='input[value="Download in Excel Format"]')
 
-        download_xls = browser.find_element_by_css_selector('input[value="Download in Excel Format"]')
-        download_xls.click()
         sleep(15)
+
+
+if __name__ == '__main__':
+
+    for year in range(2015, 2021):
+        decode_years = {
+            2015: 53,
+            2016: 52,
+            2017: 52,
+            2018: 52,
+            2019: 52,
+            2020: 53,
+        }
+        get_eurostat_mortality_by_5y_intervals(year, 10, decode_years[year])
+
+        # TO_DO - Turn code below into a decorator
+        filename = max([path.join(source_data, file) for file in listdir(source_data)], key=path.getctime)
+        rename(filename, path.join(source_data, f'EUROSTAT_RAW_YEAR_{year}.zip'))
+
+        zip_file = max([path.join(source_data, file) for file in listdir(source_data)], key=path.getctime)
+        with ZipFile(zip_file, 'r') as obj:
+            list_files = obj.infolist()
+            files = [file.filename for file in list_files if 'data' in file.filename.lower()]
+            obj.extract(member=files[0], path=source_data, pwd=None)
+
+        filename = path.join(source_data, files[0])
+        rename(filename, path.join(source_data, f'EUROSTAT_RAW_YEAR_{year}.csv'))

@@ -14,16 +14,16 @@ if __name__ == '__main__':
     # from code.scraping.get_life_expectancies import get_life_expectancy_cl
     #
     # country_data = LIFE_EXPECTANCY_DATA
-    # for key, country in country_data.items():
+    # for key, countries_regions in country_data.items():
     #     file = get_life_expectancy_cl(
-    #         init_file=country['init_file'],
-    #         sheet_name=country.get('sheet_name'),
-    #         url_dict=country['url_dict'],
-    #         page_file=country['page_file'],
-    #         pf_name=country['pf_name'],
-    #         columns=country['columns'],
-    #         rename_columns=country['rename_columns'],
-    #         start_index=country['start_index'],
-    #         end_index=country.get('end_index')
+    #         init_file=countries_regions['init_file'],
+    #         sheet_name=countries_regions.get('sheet_name'),
+    #         url_dict=countries_regions['url_dict'],
+    #         page_file=countries_regions['page_file'],
+    #         pf_name=countries_regions['pf_name'],
+    #         columns=countries_regions['columns'],
+    #         rename_columns=countries_regions['rename_columns'],
+    #         start_index=countries_regions['start_index'],
+    #         end_index=countries_regions.get('end_index')
     #     )
     #     print(f'finished with {file}')

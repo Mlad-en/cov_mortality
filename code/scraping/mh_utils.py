@@ -49,7 +49,7 @@ def get_mh_articles(s_range: str, e_range: str) -> requests.models.Response:
 def parse_stats_article_links(req: requests.models.Response) -> Union[Tuple[str, str], Tuple[None, None]]:
     '''Returns a tuple of strings containing the title and link to articles containing Covid-19 statistics'''
     soup = BeautifulSoup(req, 'lxml')
-    stats_article = soup.find_all('a', text=re.compile(TITLE_ARTICLE_PATTERN))
+    stats_article = soup.find_all('a', text=re.compile(MH_TITLE_ARTICLE_PATTERN))
     if stats_article:
         article_link = BG_MH_URL['main'] + stats_article[0]['href'][1:]  # strips leading slash "/"
         title = stats_article[0].text
@@ -79,7 +79,7 @@ def save_raw_mh_articles(period_dict: Dict[str, Tuple[int, int, int]]) -> str:
     MH_raw_article_text_from_{START_DATE}_to_{END_DATE}.csv
     '''
 
-    df = pd.DataFrame(columns=RAW_ARTICLE_TEXT_COLUMNS)
+    df = pd.DataFrame(columns=MH_RAW_ARTICLE_TEXT_COLUMNS)
 
     for start_range, end_range in generate_dates_between_periods(period_dict):
         page = get_mh_articles(start_range, end_range)
@@ -116,14 +116,14 @@ def generate_raw_mortality_per_person(original_file: str) -> pd.DataFrame:
     :return: Returns a Data frame with person records about persons that have passed from COVID-19.
     '''
 
-    raw_per_person_df = pd.DataFrame(columns=PER_PERSON_COLUMNS)
+    raw_per_person_df = pd.DataFrame(columns=MH_PER_PERSON_COLUMNS)
     raw_article_text_df = pd.read_csv(original_file)
     raw_article_text_df.dropna(axis=0, how='any', inplace=True)
 
     for index in raw_article_text_df.index:
         article_text = raw_article_text_df.at[index, 'article_text']
         date = raw_article_text_df.at[index, 'date']
-        mortality_groups_extract = re.finditer(SPIT_BY_GENDER_ARTICLE_PATTERN, article_text)
+        mortality_groups_extract = re.finditer(MH_SPIT_BY_GENDER_ARTICLE_PATTERN, article_text)
         start_ranges = [mortality_group.start() for mortality_group in mortality_groups_extract]
 
         if start_ranges:
@@ -165,7 +165,7 @@ def generate_person_attributes(df: pd.DataFrame) -> str:
     for index in df.index:
         person_data = df.at[index, 'person_data_raw'].lower()
 
-        for attr_name, attr_values in PER_PERSON_COMORBIDITY.items():
+        for attr_name, attr_values in MH_PER_PERSON_COMORBIDITY.items():
             for attr in attr_values:
                 if attr in person_data:
                     df.at[index, attr_name] = 'Y'
@@ -184,7 +184,7 @@ def generate_person_attributes(df: pd.DataFrame) -> str:
         df.at[index, 'gender'] = gender
 
         try:
-            age = re.findall(PER_PERSON_AGE_PATTERN, person_data)[0]
+            age = re.findall(MH_PER_PERSON_AGE_PATTERN, person_data)[0]
             df.at[index, 'age'] = age
         except (TypeError, IndexError):
             continue

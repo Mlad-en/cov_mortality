@@ -12,7 +12,7 @@ def get_life_expectancy_cl(filename: str, url_dict: Dict, page_file: str, pf_nam
                  end_index: Union[List, None] = None, sheet_name: Union[str, None] = None) -> str:
     '''
     Country Level (cl) function - function makes a request to a given statistics institution's web page.
-    It downloads a file containing the institution's life expectancy for their country.
+    It downloads a file containing the institution's life expectancy for their countries_regions.
     :param filename: the file naming convention for the resulting file
     :param url_dict: The URL structure of the given statistics institution's page
     :param page_file: (pages | files) <-- within the URL structure of the statistic institution's page
@@ -88,16 +88,16 @@ def merge_cz_files(file_men: str, file_women: str) -> str:
 #     from code.url_constants import LIFE_EXPECTANCY_DATA
 #
 #     country_data = LIFE_EXPECTANCY_DATA
-#     for key, country in country_data.items():
+#     for key, countries_regions in country_data.items():
 #         file = get_life_expectancy_cl(
-#             init_file=country['init_file'],
-#             sheet_name=country.get('sheet_name'),
-#             url_dict=country['url_dict'],
-#             page_file=country['page_file'],
-#             pf_name=country['pf_name'],
-#             columns=country['columns'],
-#             rename_columns=country['rename_columns'],
-#             start_index=country['start_index'],
-#             end_index=country.get('end_index')
+#             init_file=countries_regions['init_file'],
+#             sheet_name=countries_regions.get('sheet_name'),
+#             url_dict=countries_regions['url_dict'],
+#             page_file=countries_regions['page_file'],
+#             pf_name=countries_regions['pf_name'],
+#             columns=countries_regions['columns'],
+#             rename_columns=countries_regions['rename_columns'],
+#             start_index=countries_regions['start_index'],
+#             end_index=countries_regions.get('end_index')
 #         )
 #         print(f'finished with {file}')

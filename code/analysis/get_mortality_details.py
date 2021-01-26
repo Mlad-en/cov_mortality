@@ -15,7 +15,7 @@ def calc_avg_mortality_by_period(init_file: str, group_by: str,
     '''
     :param init_file: File name containing data to be analyzed
     :param group_by: (date | weeknum) <- way of aggregating data
-    :param country: specify country iso code
+    :param country: specify countries_regions iso code
     :param dt_format:
     :param start_date: Optional - start period for calculation provided in the following format:
     [YYYY, MM, DD]

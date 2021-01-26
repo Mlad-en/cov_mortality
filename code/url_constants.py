@@ -16,10 +16,13 @@ BG_NSI_URL = {
         'life_expectancy':
             '/bg/content/3018/смъртност-и-средна-продължителност-на-предстоящия-живот-на-населението-по-местоживеене',
             'mortality_per_week': '/bg/node/18121/',
+        'population_by_region':
+        '/en/content/6704/population-districts-municipalities-place-residence-and-sex'
     },
     'files': {
         'mortality_per_week': '/bg/node/18121/',
         'life_expectancy': '/sites/default/files/files/data/timeseries/Pop_3.1_tab_mortality_DR.xls',
+        'population_by_region': '/sites/default/files/files/data/timeseries/Pop_6.1.1_Pop_DR_EN.xls'
     }
 }
 
@@ -95,6 +98,7 @@ CZ_COV_URL = {
     }
 }
 
+# countries life expencancy bindings used for the country-level life expectancy function
 LIFE_EXPECTANCY_DATA = {
     'Bulgaria': {
         'init_file': 'bg_life_expectancy.csv',
@@ -137,10 +141,10 @@ LIFE_EXPECTANCY_DATA = {
     }
 }
 
-# Eurostat website providing mortality data per country, week, gender and age group
+# Eurostat website providing mortality data per countries_regions, week, gender and age group
 EUROSTAT_MORTALITY = {
     'main': 'https://appsso.eurostat.ec.europa.eu',
     'pages': {
-        'mortality_per_week' : '/nui/show.do?dataset=demo_r_mweek3&lang=en'
+        'mortality_per_week': '/nui/show.do?dataset=demo_r_mweek3&lang=en'
     }
 }

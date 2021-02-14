@@ -13,9 +13,9 @@ BG_MH_URL = {
 BG_NSI_URL = {
     'main': 'https://www.nsi.bg',
     'pages': {
+        'mortality_per_week': '/bg/node/18121/',
         'life_expectancy':
             '/bg/content/3018/смъртност-и-средна-продължителност-на-предстоящия-живот-на-населението-по-местоживеене',
-            'mortality_per_week': '/bg/node/18121/',
         'population_by_region':
         '/en/content/6704/population-districts-municipalities-place-residence-and-sex'
     },
@@ -98,53 +98,65 @@ CZ_COV_URL = {
     }
 }
 
-# countries life expencancy bindings used for the country-level life expectancy function
-LIFE_EXPECTANCY_DATA = {
-    'Bulgaria': {
-        'init_file': 'bg_life_expectancy.csv',
-        'sheet_name': '2017-2019',
-        'url_dict': BG_NSI_URL,
-        'page_file': 'files',
-        'pf_name': 'life_expectancy',
-        'columns': ['Unnamed: 0', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9'],
-        'rename_columns': ['Age', 'Mean', 'Men', 'Women'],
-        'start_index': ['Unnamed: 0', 'Общо за страната'],
-        'end_index': ['Unnamed: 0', 'В градовете']
-    },
-    'United Kingdom':{
-        'init_file': 'uk_life_expectancy.csv',
-        'sheet_name': '2017-2019',
-        'url_dict': UK_ONS_URL,
-        'page_file': 'files',
-        'pf_name': 'life_expectancy',
-        'columns': ['National Life Tables, Great Britain','Unnamed: 5', 'Unnamed: 11'],
-        'rename_columns': ['Age', 'Men', 'Women'],
-        'start_index': ['National Life Tables, Great Britain', 'x'],
-    },
-    'Czech Republic-MEN': {
-        'init_file': 'cz_life_expectancy_men.csv',
-        'url_dict': CZ_CZSO_URL,
-        'page_file': 'files',
-        'pf_name': 'life_expectancy_men',
-        'columns': ['2019','Unnamed: 9'],
-        'rename_columns': ['age','men'],
-        'start_index': ['2019', 'věk (x) age'],
-    },
-    'Czech Republic-WOMEN': {
-        'init_file': 'cz_life_expectancy_women.csv',
-        'url_dict': CZ_CZSO_URL,
-        'page_file': 'files',
-        'pf_name': 'life_expectancy_women',
-        'columns': ['2019', 'Unnamed: 9'],
-        'rename_columns': ['age', 'women'],
-        'start_index': ['2019', 'věk (x) age'],
-    }
-}
-
 # Eurostat website providing mortality data per countries_regions, week, gender and age group
 EUROSTAT_MORTALITY = {
     'main': 'https://appsso.eurostat.ec.europa.eu',
     'pages': {
         'mortality_per_week': '/nui/show.do?dataset=demo_r_mweek3&lang=en'
     }
+}
+
+# __countries life expencancy bindings used for the country-level life expectancy function
+LIFE_EXPECTANCY_DATA = {
+    'Bulgaria': {
+        'partial': False,
+        'init_file': 'bg_life_expectancy.csv',
+        'sheet_name': '2017-2019',
+        'url_dict': BG_NSI_URL,
+        'page_file': 'files',
+        'pf_name': 'life_expectancy',
+        'columns': ['Unnamed: 0', 'Unnamed: 8', 'Unnamed: 9'],
+        'rename_columns': ['Age', 'Male', 'Female'],
+        'start_index': ['Unnamed: 0', 'Общо за страната'],
+        'end_index': ['Unnamed: 0', '100+']
+    },
+    'United Kingdom': {
+        'partial': False,
+        'init_file': 'uk_life_expectancy.csv',
+        'sheet_name': '2017-2019',
+        'url_dict': UK_ONS_URL,
+        'page_file': 'files',
+        'pf_name': 'life_expectancy',
+        'columns': ['National Life Tables, Great Britain','Unnamed: 5', 'Unnamed: 11'],
+        'rename_columns': ['Age', 'Male', 'Female'],
+        'start_index': ['National Life Tables, Great Britain', 'x'],
+    },
+    'Czech Republic-MEN': {
+        'partial': True,
+        'partial_type': 'men',
+        'init_file': 'cz_life_expectancy_men.csv',
+        'url_dict': CZ_CZSO_URL,
+        'page_file': 'files',
+        'pf_name': 'life_expectancy_men',
+        'columns': ['2019','Unnamed: 9'],
+        'rename_columns': ['Age', 'Male'],
+        'start_index': ['2019', 'věk (x) age'],
+    },
+    'Czech Republic-WOMEN': {
+        'partial': True,
+        'partial_type': 'women',
+        'init_file': 'cz_life_expectancy_women.csv',
+        'url_dict': CZ_CZSO_URL,
+        'page_file': 'files',
+        'pf_name': 'life_expectancy_women',
+        'columns': ['2019', 'Unnamed: 9'],
+        'rename_columns': ['Age', 'Female'],
+        'start_index': ['2019', 'věk (x) age'],
+    }
+}
+
+LIFE_EXPECTANCY_DATA_PACKAGED = {
+    'Bulgaria': [LIFE_EXPECTANCY_DATA['Bulgaria']],
+    'United Kingdom': [LIFE_EXPECTANCY_DATA['United Kingdom']],
+    'Czechia': [LIFE_EXPECTANCY_DATA['Czech Republic-MEN'], LIFE_EXPECTANCY_DATA['Czech Republic-WOMEN']]
 }

@@ -4,12 +4,12 @@ from typing import Dict, List, Union
 import requests
 import pandas as pd
 
-from code.folder_constants import source_data
+from code.folder_constants import source_pyll_le
 
 
 def get_life_expectancy_cl(filename: str, url_dict: Dict, page_file: str, pf_name: str,
-                 columns: List, rename_columns: List, start_index: List,
-                 end_index: Union[List, None] = None, sheet_name: Union[str, None] = None) -> str:
+                           columns: List, rename_columns: List, start_index: List,
+                           end_index: Union[List, None] = None, sheet_name: Union[str, None] = None) -> str:
     '''
     Country Level (cl) function - function makes a request to a given statistics institution's web page.
     It downloads a file containing the institution's life expectancy for their countries_regions.
@@ -18,7 +18,7 @@ def get_life_expectancy_cl(filename: str, url_dict: Dict, page_file: str, pf_nam
     :param page_file: (pages | files) <-- within the URL structure of the statistic institution's page
     :param pf_name: The page or file name
     :param columns: The column names of the
-    :param rename_columns:
+    :param rename_columns: Name of the new column headers (used to standardize the header language to English)
     :param start_index: Location of the columns in the given file
     :param end_index: Optional - the end index for given file (needed if the institution provides additional data in their tables that is not required).
     :param sheet_name: Optional - the sheet name of the file that is being parsed from a given institution
@@ -43,8 +43,10 @@ def get_life_expectancy_cl(filename: str, url_dict: Dict, page_file: str, pf_nam
         df = df.iloc[index_start_rows[0] + 1:]
 
     df.columns = rename_columns
+    sex = rename_columns[1:]
+    df = pd.melt(df, id_vars=['Age'], value_vars=sex, var_name='Sex', value_name='Life_Expectancy')
 
-    directory = source_data
+    directory = source_pyll_le
     file_path = path.join(directory, filename)
 
     df.to_csv(file_path, index=False)
@@ -59,45 +61,24 @@ def merge_cz_files(file_men: str, file_women: str) -> str:
     :return: Returns the file path of the generated file
     '''
 
-    file_men = path.join(source_data, file_men)
-    file_women = path.join(source_data, file_women)
+    file_men = path.join(source_pyll_le, file_men)
+    file_women = path.join(source_pyll_le, file_women)
 
     df_men = pd.read_csv(file_men)
     df_women = pd.read_csv(file_women)
 
     df_women.dropna(how='any', axis=0, inplace=True)
-    df_women['age'] = df_women['age'].astype('int')
+    df_women['Age'] = df_women['Age'].astype('int')
 
     df_men.dropna(how='any', axis=0, inplace=True)
-    df_men['age'] = df_men['age'].astype('int')
+    df_men['Age'] = df_men['Age'].astype('int')
 
-    both_sexes = df_men.merge(df_women, on='age', how='left')
+    frames = [df_men, df_women]
+    both_sexes = pd.concat(frames)
     both_sexes = both_sexes.round(2)
 
-    file_name = 'cz_life_expectancy_both_sexes'
-    file_path = path.join(source_data, file_name)
+    file_name = 'cz_life_expectancy_both_sexes.csv'
+    file_path = path.join(source_pyll_le, file_name)
     both_sexes.to_csv(file_path, index=False)
 
     return file_path
-
-
-
-# if __name__ == '__main__':
-    # merge_cz_files('cz_life_expectancy_men.csv','cz_life_expectancy_women.csv')
-
-#     from code.url_constants import LIFE_EXPECTANCY_DATA
-#
-#     country_data = LIFE_EXPECTANCY_DATA
-#     for key, countries_regions in country_data.items():
-#         file = get_life_expectancy_cl(
-#             init_file=countries_regions['init_file'],
-#             sheet_name=countries_regions.get('sheet_name'),
-#             url_dict=countries_regions['url_dict'],
-#             page_file=countries_regions['page_file'],
-#             pf_name=countries_regions['pf_name'],
-#             columns=countries_regions['columns'],
-#             rename_columns=countries_regions['rename_columns'],
-#             start_index=countries_regions['start_index'],
-#             end_index=countries_regions.get('end_index')
-#         )
-#         print(f'finished with {file}')

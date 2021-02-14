@@ -3,10 +3,12 @@ from os import path, listdir, rename
 from typing import Dict
 from zipfile import ZipFile
 
+import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 
 from code.folder_constants import drivers, eurostat_raw_files
 from code.url_constants import EUROSTAT_MORTALITY
@@ -39,7 +41,10 @@ def locate_and_click_element(browser, select_type: str, element_str: str, clicks
         'css': By.CSS_SELECTOR,
         'class': By.CLASS_NAME
     }
-    item = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((sel_type[select_type], element_str)))
+    try:
+        item = WebDriverWait(browser, 30).until(EC.element_to_be_clickable((sel_type[select_type], element_str)))
+    except TimeoutException:
+        item = WebDriverWait(browser, 10).until(EC.visibility_of_element_located((sel_type[select_type], element_str)))
     for click in range(clicks):
         item.click()
 
@@ -79,6 +84,7 @@ def get_eurostat_mortality_by_5y_intervals(search_params: Dict) -> None:
             locate_and_click_element(browser, select_type='id', element_str='checkUncheckAllCheckboxTable', clicks=2)
             # Set search parameters
             for item in param_values:
+                print(f'Searching for: {item}')
                 locate_and_click_element(browser, select_type='id', element_str=item)
 
         locate_and_click_element(browser, select_type='id', element_str='updateExtractionButton')
@@ -90,10 +96,10 @@ def get_eurostat_mortality_by_5y_intervals(search_params: Dict) -> None:
         locate_and_click_element(browser, select_type='css', element_str='li[class="download"]')
         locate_and_click_element(browser, select_type='css', element_str='input[value="Download in CSV Format"]')
 
-        sleep(15)
+        sleep(40)
 
 
-def extract_eurostat_files(location: str, year: int, group: str):
+def extract_eurostat_files(location: str, year: int, group: str, encoding: str = None):
     '''
     Function renames the most recently downloaded file in the given location.
     It will then extract a csv file from it that contains the word 'data' in it.
@@ -104,6 +110,7 @@ def extract_eurostat_files(location: str, year: int, group: str):
     The file that will be extracted will be extracted in the same file.
     :param group:
     :param year: The year contained in the file in question. This is needed for the naming convention of the file.
+    :param encoding:
     :return: Function returns the file path of the extracted csv file
     '''
 
@@ -115,9 +122,10 @@ def extract_eurostat_files(location: str, year: int, group: str):
         list_files = obj.infolist()
         files = [file.filename for file in list_files if 'data' in file.filename.lower()]
         obj.extract(member=files[0], path=location, pwd=None)
-
     filename = path.join(location, files[0])
     file_path = path.join(location, f'EUROSTAT_RAW_YEAR_{group}_{year}.csv')
     rename(filename, file_path)
+    if encoding:
+        pd.read_csv(file_path, encoding=encoding).to_csv(file_path, encoding='utf-8-sig')
 
     return file_path

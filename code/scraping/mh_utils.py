@@ -8,7 +8,7 @@ import re
 import requests
 import pandas as pd
 
-from code.folder_constants import source_data
+from code.folder_constants import source_data, source_mortality_bg_auto
 from code.scraping_constants import *
 from code.url_constants import BG_MH_URL
 
@@ -101,7 +101,7 @@ def save_raw_mh_articles(period_dict: Dict[str, Tuple[int, int, int]]) -> str:
         df = df.append(data, ignore_index=True)
 
     file_name = f'bg_mh_raw_article_text_from_{period_dict["start_date"]}_to_{period_dict["end_date"]}.csv'
-    location = source_data
+    location = source_mortality_bg_auto
     file_location = path.join(location, file_name)
     df.to_csv(file_location, encoding='utf-8-sig', index=False)
 
@@ -158,7 +158,7 @@ def generate_person_attributes(df: pd.DataFrame) -> str:
     :param df: Receives dataframe object with raw per person data scraped from the Bulgarian Ministry of Health.
     :return: Returns the file path of the created csv file.
     '''
-    unknown = 'ненамерено'
+    unknown = 'UNK'
 
     df = df
 
@@ -180,7 +180,7 @@ def generate_person_attributes(df: pd.DataFrame) -> str:
             else ''
         df.at[index, 'no_comorbidity'] = no_comorbidity
 
-        gender = 'male' if 'мъж' in person_data else 'female' if 'жена' in person_data else unknown
+        gender = 'Male' if 'мъж' in person_data else 'Female' if 'жена' in person_data else unknown
         df.at[index, 'gender'] = gender
 
         try:
@@ -190,7 +190,7 @@ def generate_person_attributes(df: pd.DataFrame) -> str:
             continue
 
     file_name = f'bg_mh_per_person_mortality.csv'
-    location = source_data
+    location = source_mortality_bg_auto
     file_location = path.join(location, file_name)
     df.to_csv(file_location, encoding='utf-8-sig', index=False)
 

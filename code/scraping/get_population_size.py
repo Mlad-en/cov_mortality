@@ -22,8 +22,10 @@ def get_bg_population_by_gender_and_region():
     total_row = df[df.iloc[:, 0].str.startswith('Total')].index.values[0]
     total_men = df.at[total_row, 'pop_Male']
     total_women = df.at[total_row, 'pop_Female']
+    total = df.at[total_row, 'pop_Total']
 
     df['pop_pct_males'] = df.apply(lambda x: (x['pop_Male'] / total_men) * 100, axis=1).round(2)
     df['pop_pct_females'] = df.apply(lambda x: (x['pop_Female'] / total_women) * 100, axis=1).round(2)
+    df['pop_pct_total'] = df.apply(lambda x: (x['pop_Total'] / total) * 100, axis=1).round(2)
 
     return df
